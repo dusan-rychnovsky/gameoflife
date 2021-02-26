@@ -4,6 +4,7 @@ import Html exposing (Html, button, div, input, text, label)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 import String exposing (toInt, fromInt)
+import Array exposing (Array)
 
 -- MAIN
 
@@ -17,23 +18,31 @@ grid_height = 10
 
 -- MODEL
 
-type alias Model = String
+type alias Model = 
+  {  running : Bool
+  ,  numSteps : String
+  ,  cells : Array Bool
+  }
 
 init : Model
 init =
-  ""
+  { running = False, numSteps = "", cells = Array.initialize (grid_width * grid_height) (always False) }
 
 -- UPDATE
 
 type Msg
-  = SetNumSteps String
+  = ToggleCell Int Int
+  | SetNumSteps String
   | Run
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
+    ToggleCell posX posY ->
+      model
+    
     SetNumSteps str ->
-      str
+      { model | numSteps = str }
 
     Run ->
       model
@@ -54,7 +63,7 @@ viewMenu model =
       , style "text-align" "center"
       , style "font-weight" "bold" ]
     [ label [] [ text "Steps: " ]
-    , input [ type_ "number", value model, onInput SetNumSteps, style "margin-bottom" "10px" ] [ ]
+    , input [ type_ "number", value model.numSteps, onInput SetNumSteps, style "margin-bottom" "10px" ] [ ]
     , button [ onClick Run, style "font-weight" "600" ] [ text "Run" ]
     ]
   
@@ -73,4 +82,4 @@ viewGridCell model =
       , style "border" "1px black solid"
       , style "background-color" "gray"
       , style "width" "50px"
-      , style "height" "50px" ] [ text model ]
+      , style "height" "50px" ] [ text model.numSteps ]
