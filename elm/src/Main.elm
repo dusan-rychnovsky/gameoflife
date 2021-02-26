@@ -4,7 +4,7 @@ import Html exposing (Html, button, div, input, text, label)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 import String exposing (toInt, fromInt)
-import Array exposing (Array)
+import Array exposing (Array, set, get)
 
 -- MAIN
 
@@ -39,13 +39,22 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     ToggleCell posX posY ->
-      model
+      { model | cells = flipCell (coordsToIndex posY posX) model.cells }
     
     SetNumSteps str ->
       { model | numSteps = str }
 
     Run ->
       model
+
+flipCell : Int -> Array Bool -> Array Bool
+flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr
+
+flipMaybeBool : Maybe Bool -> Bool
+flipMaybeBool maybe = case maybe of
+  Just True -> False
+  Just False -> True
+  Nothing -> True
 
 -- VIEW
 
@@ -69,17 +78,22 @@ viewMenu model =
   
 viewGrid : Model -> Html Msg
 viewGrid model =
-  div [ style "float" "left", style "border" "2px black solid", style "width" "520px"] (List.repeat grid_height (viewGridRow model))
+  div [ style "float" "left", style "border" "2px black solid", style "width" "520px"] (List.map (viewGridRow model) (List.range 0 (grid_height - 1)))
 
-viewGridRow : Model -> Html Msg
-viewGridRow model =
-  div [] (List.repeat grid_width (viewGridCell model))
+viewGridRow : Model -> Int -> Html Msg
+viewGridRow model posY =
+  div [] (List.map (viewGridCell model posY) (List.range 0 (grid_width - 1)))
 
-viewGridCell : Model -> Html Msg
-viewGridCell model =
-  div [ onClick (SetNumSteps "3")
+viewGridCell : Model -> Int -> Int -> Html Msg
+viewGridCell model posY posX =
+  div [ onClick (ToggleCell posX posY)
       , style "float" "left"
       , style "border" "1px black solid"
       , style "background-color" "gray"
       , style "width" "50px"
-      , style "height" "50px" ] [ text model.numSteps ]
+      , style "height" "50px" ] [ text (Debug.toString (Array.get (coordsToIndex posY posX) model.cells)) ]
+
+-- UTIL
+
+coordsToIndex : Int -> Int -> Int
+coordsToIndex posY posX = posY * grid_width + posX
