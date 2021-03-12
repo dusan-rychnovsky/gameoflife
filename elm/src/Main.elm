@@ -45,7 +45,7 @@ update msg model =
       { model | numSteps = str }
 
     Run ->
-      model
+      { model | running = True }
 
 flipCell : Int -> Array Bool -> Array Bool
 flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr
