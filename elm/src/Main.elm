@@ -34,6 +34,7 @@ type Msg
   = ToggleCell Int Int
   | SetNumSteps String
   | Run
+  | Tick
 
 update : Msg -> Model -> Model
 update msg model =
@@ -47,14 +48,20 @@ update msg model =
     Run ->
       { model | running = True }
 
+    Tick ->
+      model
+
 flipCell : Int -> Array Bool -> Array Bool
 flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr
 
 flipMaybeBool : Maybe Bool -> Bool
-flipMaybeBool maybe = case maybe of
-  Just True -> False
-  Just False -> True
-  Nothing -> True
+flipMaybeBool maybe = not(maybeBoolToBool maybe)
+
+maybeBoolToBool : Maybe Bool -> Bool
+maybeBoolToBool maybe = case maybe of
+  Just True -> True
+  Just False -> False
+  Nothing -> False
 
 -- VIEW
 
