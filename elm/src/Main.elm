@@ -49,7 +49,7 @@ update msg model =
       { model | running = True }
 
     Tick ->
-      model
+      { model | cells = Array.initialize (grid_width * grid_height) (always False) }
 
 flipCell : Int -> Array Bool -> Array Bool
 flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr

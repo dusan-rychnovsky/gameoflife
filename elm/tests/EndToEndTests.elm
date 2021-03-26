@@ -25,6 +25,13 @@ suite =
           oneTickCells = (update Tick initialSetup).cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
+    , test "lone cell dies off" <|
+      \_ ->
+        let
+          loneCell = init |> update (ToggleCell 3 3) |> update (SetNumSteps "1") |> update Run
+          oneTickCells = (update Tick loneCell).cells
+        in
+          aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
     ]
 
 aliveCellsEquals : List (Int, Int) -> Array Bool -> Bool
