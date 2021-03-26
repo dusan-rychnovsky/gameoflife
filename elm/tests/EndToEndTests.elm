@@ -28,7 +28,7 @@ suite =
     , test "lone cell dies off" <|
       \_ ->
         let
-          loneCell = init |> update (ToggleCell 3 3) |> update (SetNumSteps "1") |> update Run
+          loneCell = initialSetup |> update (ToggleCell 3 3)
           oneTickCells = (update Tick loneCell).cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
