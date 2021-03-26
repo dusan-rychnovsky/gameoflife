@@ -66,6 +66,9 @@ maybeBoolToBool maybe = case maybe of
 staysAlive : (Int, Int) -> Array Bool -> Bool
 staysAlive (posY, posX) grid = False
 
+numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
+numOfAliveNeighbours (posY, posX) grid = 0
+
 -- VIEW
 
 view : Model -> Html Msg
