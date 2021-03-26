@@ -63,6 +63,9 @@ maybeBoolToBool maybe = case maybe of
   Just False -> False
   Nothing -> False
 
+staysAlive : (Int, Int) -> Array Bool -> Bool
+staysAlive (posY, posX) grid = False
+
 -- VIEW
 
 view : Model -> Html Msg
