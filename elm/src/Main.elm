@@ -65,7 +65,8 @@ maybeBoolToBool maybe = case maybe of
   Nothing -> False
 
 staysAlive : (Int, Int) -> Array Bool -> Bool
-staysAlive (posY, posX) grid = False
+staysAlive coords grid =
+  (numOfAliveNeighbours coords grid) >= 2
 
 numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
 numOfAliveNeighbours (posY, posX) grid =
