@@ -66,7 +66,10 @@ maybeBoolToBool maybe = case maybe of
 
 staysAlive : (Int, Int) -> Array Bool -> Bool
 staysAlive coords grid =
-  (numOfAliveNeighbours coords grid) >= 2
+  let
+    num = numOfAliveNeighbours coords grid
+  in
+    num >= 2 && num <= 3
 
 numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
 numOfAliveNeighbours (posY, posX) grid =
