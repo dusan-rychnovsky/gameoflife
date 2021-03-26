@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
 import String exposing (toInt, fromInt)
 import Array exposing (Array, set, get)
+import List exposing (filter, foldl)
 
 -- MAIN
 
@@ -67,7 +68,23 @@ staysAlive : (Int, Int) -> Array Bool -> Bool
 staysAlive (posY, posX) grid = False
 
 numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
-numOfAliveNeighbours (posY, posX) grid = 0
+numOfAliveNeighbours (posY, posX) grid =
+  let
+    neighboursCoords = [
+        (posY - 1, posX - 1), (posY - 1, posX), (posY - 1, posX + 1),
+        (posY, posX - 1), (posY, posX + 1),
+        (posY + 1, posX - 1), (posY + 1, posX), (posY + 1, posX + 1)]
+  in
+    neighboursCoords |>
+    List.filter (\coords -> isAlive coords grid) |>
+    List.foldl (\_ acc -> acc + 1) 0
+
+isAlive : (Int, Int) -> Array Bool -> Bool
+isAlive (posY, posX) grid =
+  case (Array.get (coordsToIndex posY posX) grid) of
+    Just True -> True
+    Just False -> False
+    Nothing -> False
 
 -- VIEW
 
