@@ -32,6 +32,13 @@ suite =
           oneTickCells = (update Tick loneCell).cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
+    , skip <| test "block remains still" <|
+      \_ ->
+        let
+          block = initialSetup |> update (ToggleCell 3 3) |> update (ToggleCell 3 4) |> update (ToggleCell 4 3) |> update (ToggleCell 4 4)
+          oneTickCells = (update Tick block).cells
+        in
+          aliveCellsEquals [(3, 3), (3, 4), (4, 3), (4, 4)] oneTickCells |> Expect.true "Contains a block"
     ]
 
 aliveCellsEquals : List (Int, Int) -> Array Bool -> Bool
