@@ -23,6 +23,8 @@ suite =
         \_ -> (staysAlive (3, 3) (populateGrid [(3, 3), (3, 2), (3, 4), (2, 3), (4, 4)])) |> Expect.equal False
       , test "a dead cell with exactly three live neighbours becomes a live cell, as if by reproduction" <|
         \_ -> (staysAlive (3, 3) (populateGrid [(3, 2), (3, 4), (2, 3)])) |> Expect.equal True
+      , test "a dead cell with two neighbours remains dead" <|
+        \_ -> (staysAlive (3, 3) (populateGrid [(3, 2), (3, 4)])) |> Expect.equal False
       ]
     , describe "numOfAliveNeighbours"
       [ test "0 alive neighbours" <|

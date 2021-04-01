@@ -71,9 +71,10 @@ updateGrid grid =
 staysAlive : (Int, Int) -> Array Bool -> Bool
 staysAlive coords grid =
   let
+    alive = isAlive coords grid
     num = numOfAliveNeighbours coords grid
   in
-    num >= 2 && num <= 3
+    (alive && num == 2) || num == 3
 
 numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
 numOfAliveNeighbours (posY, posX) grid =
