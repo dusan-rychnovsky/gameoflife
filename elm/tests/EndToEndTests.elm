@@ -32,7 +32,7 @@ suite =
           oneTickCells = (update Tick loneCell).cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
-    , skip <| test "block remains still" <|
+    , test "block remains still" <|
       \_ ->
         let
           block = initialSetup |> update (ToggleCell 3 3) |> update (ToggleCell 3 4) |> update (ToggleCell 4 3) |> update (ToggleCell 4 4)
