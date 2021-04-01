@@ -40,7 +40,7 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    ToggleCell posX posY ->
+    ToggleCell posY posX ->
       { model | cells = flipCell (coordsToIndex posY posX) model.cells }
     
     SetNumSteps str ->
@@ -50,7 +50,7 @@ update msg model =
       { model | running = True }
 
     Tick ->
-      { model | cells = Array.initialize (grid_width * grid_height) (always False) }
+      { model | cells = updateGrid model.cells }
 
 flipCell : Int -> Array Bool -> Array Bool
 flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr
@@ -63,6 +63,10 @@ maybeBoolToBool maybe = case maybe of
   Just True -> True
   Just False -> False
   Nothing -> False
+
+updateGrid : Array Bool -> Array Bool
+updateGrid grid =
+  List.foldl (\idx acc -> Array.set idx (staysAlive (indexToCoords idx) grid) acc) (Array.initialize (grid_width * grid_height) (always False)) (List.range 0 (grid_height * grid_width - 1))
 
 staysAlive : (Int, Int) -> Array Bool -> Bool
 staysAlive coords grid =
@@ -120,7 +124,7 @@ viewGridRow model posY =
 
 viewGridCell : Model -> Int -> Int -> Html Msg
 viewGridCell model posY posX =
-  div [ onClick (ToggleCell posX posY)
+  div [ onClick (ToggleCell posY posX)
       , style "float" "left"
       , style "border" "1px black solid"
       , style "background-color" "gray"
@@ -131,3 +135,6 @@ viewGridCell model posY posX =
 
 coordsToIndex : Int -> Int -> Int
 coordsToIndex posY posX = posY * grid_width + posX
+
+indexToCoords : Int -> (Int, Int)
+indexToCoords idx = (idx // grid_width, modBy grid_width idx)

@@ -41,6 +41,18 @@ suite =
           aliveCellsEquals [(3, 3), (3, 4), (4, 3), (4, 4)] oneTickCells |> Expect.true "Contains a block"
     ]
 
+toString : Array Bool -> String
+toString grid = 
+    List.foldl (\(posY, posX) acc -> "(" ++ (String.fromInt posY) ++ "," ++ (String.fromInt posX) ++ ")" ++ acc) "" (toAliveCoords grid)
+    -- List.foldr (\idx acc -> (maybeBoolToString (Array.get idx grid)) ++ acc) "" (List.range 0 ((Array.length grid) - 1))
+
+maybeBoolToString : Maybe Bool -> String
+maybeBoolToString maybe =
+  case maybe of
+    Just True -> "T"
+    Just False -> "F"
+    Nothing -> "X"
+
 aliveCellsEquals : List (Int, Int) -> Array Bool -> Bool
 aliveCellsEquals coords cells =
   areEqual coords (toAliveCoords cells)
@@ -58,9 +70,15 @@ isSubset firstList secondList =
 toAliveCoords : Array Bool -> List (Int, Int)
 toAliveCoords cells =
   let
-    allCoords = List.map2 (\posY posX -> (posY, posX)) (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
+    allCoords = cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
   in
     allCoords |>
       List.map (\(posY, posX) -> (posY, posX, Array.get (coordsToIndex posY posX) cells)) |>
       List.filter (\(_, _, alive) -> maybeBoolToBool alive) |>
       List.map (\(posY, posX, _) -> (posY, posX))
+
+cartesian : List a -> List b -> List (a,b)
+cartesian xs ys =
+  List.concatMap
+    ( \x -> List.map ( \y -> (x, y) ) ys )
+    xs
