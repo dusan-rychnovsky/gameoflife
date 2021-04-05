@@ -132,7 +132,7 @@ viewGridCell model posY posX =
       , style "border" "1px black solid"
       , style "background-color" "gray"
       , style "width" "50px"
-      , style "height" "50px" ] [ text (Debug.toString (Array.get (coordsToIndex posY posX) model.cells)) ]
+      , style "height" "50px" ] [ text (Debug.toString (Grid.get model.cells posY posX)) ]
 
 -- UTIL
 
