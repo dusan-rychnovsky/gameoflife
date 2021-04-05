@@ -1,4 +1,6 @@
 module Main exposing (..)
+
+import Grid
 import Browser
 import Html exposing (Html, button, div, input, text, label)
 import Html.Attributes exposing (..)
@@ -27,7 +29,7 @@ type alias Model =
 
 init : Model
 init =
-  { running = False, numSteps = "", cells = Array.initialize (grid_width * grid_height) (always False) }
+  { running = False, numSteps = "", cells = Grid.create }
 
 -- UPDATE
 
