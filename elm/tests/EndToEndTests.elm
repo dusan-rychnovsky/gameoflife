@@ -1,6 +1,7 @@
 module EndToEndTests exposing (..)
 
 import Main exposing (..)
+import MaybeBool
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
@@ -74,7 +75,7 @@ toAliveCoords cells =
   in
     allCoords |>
       List.map (\(posY, posX) -> (posY, posX, Array.get (coordsToIndex posY posX) cells)) |>
-      List.filter (\(_, _, alive) -> maybeBoolToBool alive) |>
+      List.filter (\(_, _, alive) -> MaybeBool.toBool alive) |>
       List.map (\(posY, posX, _) -> (posY, posX))
 
 cartesian : List a -> List b -> List (a,b)

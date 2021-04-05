@@ -43,7 +43,7 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     ToggleCell posY posX ->
-      { model | cells = flipCell (coordsToIndex posY posX) model.cells }
+      { model | cells = Grid.flip model.cells posY posX }
     
     SetNumSteps str ->
       { model | numSteps = str }
@@ -53,18 +53,6 @@ update msg model =
 
     Tick ->
       { model | cells = updateGrid model.cells }
-
-flipCell : Int -> Array Bool -> Array Bool
-flipCell idx arr = Array.set idx (flipMaybeBool (Array.get idx arr)) arr
-
-flipMaybeBool : Maybe Bool -> Bool
-flipMaybeBool maybe = not(maybeBoolToBool maybe)
-
-maybeBoolToBool : Maybe Bool -> Bool
-maybeBoolToBool maybe = case maybe of
-  Just True -> True
-  Just False -> False
-  Nothing -> False
 
 updateGrid : Array Bool -> Array Bool
 updateGrid grid =
