@@ -4,9 +4,6 @@ import MaybeBool
 import ListExt
 import Array exposing (Array)
 
-grid_width = 10
-grid_height = 10
-
 type alias Grid =
   { width : Int
   , height : Int
