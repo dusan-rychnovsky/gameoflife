@@ -2,6 +2,7 @@ module EndToEndTests exposing (..)
 
 import Main exposing (..)
 import MaybeBool
+import ListExt
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
@@ -71,15 +72,9 @@ isSubset firstList secondList =
 toAliveCoords : Array Bool -> List (Int, Int)
 toAliveCoords cells =
   let
-    allCoords = cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
+    allCoords = ListExt.cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
   in
     allCoords |>
       List.map (\(posY, posX) -> (posY, posX, Array.get (coordsToIndex posY posX) cells)) |>
       List.filter (\(_, _, alive) -> MaybeBool.toBool alive) |>
       List.map (\(posY, posX, _) -> (posY, posX))
-
-cartesian : List a -> List b -> List (a,b)
-cartesian xs ys =
-  List.concatMap
-    ( \x -> List.map ( \y -> (x, y) ) ys )
-    xs

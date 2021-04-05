@@ -1,6 +1,7 @@
 module Grid exposing (create, get, set, flip, tick, isAlive, staysAlive, numOfAliveNeighbours)
 
 import MaybeBool
+import ListExt
 import Array exposing (Array)
 
 grid_width = 10
@@ -31,13 +32,7 @@ tick grid =
 
 positions : List (Int, Int)
 positions =
-  cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
-
-cartesian : List a -> List b -> List (a,b)
-cartesian xs ys =
-  List.concatMap
-    ( \x -> List.map ( \y -> (x, y) ) ys )
-    xs
+  ListExt.cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
 
 staysAlive : Array Bool -> Int -> Int -> Bool
 staysAlive grid posY posX =
