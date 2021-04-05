@@ -1,4 +1,4 @@
-module Grid exposing (Grid, create, get, set, flip, tick, isAlive, staysAlive, numOfAliveNeighbours)
+module Grid exposing (Grid, create, get, set, flip, flipAll, tick, isAlive, staysAlive, numOfAliveNeighbours, aliveNeighbours, toString)
 
 import MaybeBool
 import ListExt
@@ -19,7 +19,10 @@ create w h =
 
 get : Grid -> Int -> Int -> Maybe Bool
 get grid y x =
-  Array.get (coordsToIndex grid y x) grid.cells
+  if x < 0 || x >= grid.width || y < 0 || y >= grid.height then
+    Nothing
+  else
+    Array.get (coordsToIndex grid y x) grid.cells
 
 set : Grid -> Int -> Int -> Bool -> Grid
 set grid y x val =
@@ -28,6 +31,10 @@ set grid y x val =
 flip : Grid -> Int -> Int -> Grid
 flip grid y x =
   set grid y x (MaybeBool.swap (get grid y x))
+
+flipAll : Grid -> List (Int, Int) -> Grid
+flipAll grid coords =
+  List.foldl (\(y, x) acc -> (flip acc y x)) grid coords
 
 tick : Grid -> Grid
 tick grid =
@@ -50,6 +57,10 @@ staysAlive grid y x =
 
 numOfAliveNeighbours : Grid -> Int -> Int -> Int
 numOfAliveNeighbours grid y x =
+    List.foldl (\_ acc -> acc + 1) 0 (aliveNeighbours grid y x)
+
+aliveNeighbours : Grid -> Int -> Int -> List (Int, Int)
+aliveNeighbours grid y x =
   let
     neighbours = [
         (y - 1, x - 1), (y - 1, x), (y - 1, x + 1),
@@ -57,8 +68,7 @@ numOfAliveNeighbours grid y x =
         (y + 1, x - 1), (y + 1, x), (y + 1, x + 1)]
   in
     neighbours |>
-    List.filter (\(py, px) -> isAlive grid py px) |>
-    List.foldl (\_ acc -> acc + 1) 0
+    List.filter (\(py, px) -> isAlive grid py px)
 
 isAlive : Grid -> Int -> Int -> Bool
 isAlive grid y x =
@@ -66,3 +76,13 @@ isAlive grid y x =
 
 coordsToIndex : Grid -> Int -> Int -> Int
 coordsToIndex grid y x = y * grid.width + x
+
+toString : Grid -> String
+toString grid = 
+    List.foldl (\(y, x) acc -> "(" ++ (String.fromInt y) ++ "," ++ (String.fromInt x) ++ ")" ++ acc) "" (alivePositions grid)
+    -- List.foldr (\idx acc -> (maybeBoolToString (Array.get idx grid)) ++ acc) "" (List.range 0 ((Array.length grid) - 1))
+
+alivePositions : Grid -> List (Int, Int)
+alivePositions grid =
+    positions grid |>
+      List.filter (\(y, x) -> isAlive grid y x)
