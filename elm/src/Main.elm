@@ -52,38 +52,7 @@ update msg model =
       { model | running = True }
 
     Tick ->
-      { model | cells = updateGrid model.cells }
-
-updateGrid : Array Bool -> Array Bool
-updateGrid grid =
-  List.foldl (\idx acc -> Array.set idx (staysAlive (indexToCoords idx) grid) acc) (Array.initialize (grid_width * grid_height) (always False)) (List.range 0 (grid_height * grid_width - 1))
-
-staysAlive : (Int, Int) -> Array Bool -> Bool
-staysAlive coords grid =
-  let
-    alive = isAlive coords grid
-    num = numOfAliveNeighbours coords grid
-  in
-    (alive && num == 2) || num == 3
-
-numOfAliveNeighbours : (Int, Int) -> Array Bool -> Int
-numOfAliveNeighbours (posY, posX) grid =
-  let
-    neighboursCoords = [
-        (posY - 1, posX - 1), (posY - 1, posX), (posY - 1, posX + 1),
-        (posY, posX - 1), (posY, posX + 1),
-        (posY + 1, posX - 1), (posY + 1, posX), (posY + 1, posX + 1)]
-  in
-    neighboursCoords |>
-    List.filter (\coords -> isAlive coords grid) |>
-    List.foldl (\_ acc -> acc + 1) 0
-
-isAlive : (Int, Int) -> Array Bool -> Bool
-isAlive (posY, posX) grid =
-  case (Array.get (coordsToIndex posY posX) grid) of
-    Just True -> True
-    Just False -> False
-    Nothing -> False
+      { model | cells = Grid.tick model.cells }
 
 -- VIEW
 
