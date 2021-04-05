@@ -1,4 +1,4 @@
-module Grid exposing (create, get, set, flip, tick, isAlive, staysAlive, numOfAliveNeighbours)
+module Grid exposing (Grid, create, get, set, flip, tick, isAlive, staysAlive, numOfAliveNeighbours)
 
 import MaybeBool
 import ListExt
@@ -7,56 +7,65 @@ import Array exposing (Array)
 grid_width = 10
 grid_height = 10
 
-create : Array Bool
-create =
-  Array.initialize (grid_width * grid_height) (always False)
+type alias Grid =
+  { width : Int
+  , height : Int
+  , cells : Array Bool
+  }
 
-get : Array Bool -> Int -> Int -> Maybe Bool
-get grid posY posX =
-  Array.get (coordsToIndex posY posX) grid
+create : Int -> Int -> Grid
+create w h =
+  { width = w
+  , height = h
+  , cells = Array.initialize (w * h) (always False)
+  }
 
-set : Array Bool -> Int -> Int -> Bool -> Array Bool
-set grid posY posX value =
-  Array.set (coordsToIndex posY posX) value grid
+get : Grid -> Int -> Int -> Maybe Bool
+get grid y x =
+  Array.get (coordsToIndex grid y x) grid.cells
 
-flip : Array Bool -> Int -> Int -> Array Bool
-flip grid posY posX =
-  set grid posY posX (MaybeBool.swap (get grid posY posX))
+set : Grid -> Int -> Int -> Bool -> Grid
+set grid y x val =
+  { grid | cells = Array.set (coordsToIndex grid y x) val grid.cells }
 
-tick : Array Bool -> Array Bool
+flip : Grid -> Int -> Int -> Grid
+flip grid y x =
+  set grid y x (MaybeBool.swap (get grid y x))
+
+tick : Grid -> Grid
 tick grid =
   List.foldl
-    (\(posY, posX) acc -> set acc posY posX (staysAlive grid posY posX))
-    create
-    positions
+    (\(y, x) acc -> set acc y x (staysAlive grid y x))
+    (create grid.width grid.height)
+    (positions grid)
 
-positions : List (Int, Int)
-positions =
-  ListExt.cartesian (List.range 0 (grid_height - 1)) (List.range 0 (grid_width - 1))
+positions : Grid -> List (Int, Int)
+positions grid =
+  ListExt.cartesian (List.range 0 (grid.height - 1)) (List.range 0 (grid.width - 1))
 
-staysAlive : Array Bool -> Int -> Int -> Bool
-staysAlive grid posY posX =
+staysAlive : Grid -> Int -> Int -> Bool
+staysAlive grid y x =
   let
-    alive = isAlive grid posY posX
-    num = numOfAliveNeighbours grid posY posX
+    alive = isAlive grid y x
+    num = numOfAliveNeighbours grid y x
   in
     (alive && num == 2) || num == 3
 
-numOfAliveNeighbours : Array Bool -> Int -> Int -> Int
-numOfAliveNeighbours grid posY posX =
+numOfAliveNeighbours : Grid -> Int -> Int -> Int
+numOfAliveNeighbours grid y x =
   let
     neighbours = [
-        (posY - 1, posX - 1), (posY - 1, posX), (posY - 1, posX + 1),
-        (posY, posX - 1), (posY, posX + 1),
-        (posY + 1, posX - 1), (posY + 1, posX), (posY + 1, posX + 1)]
+        (y - 1, x - 1), (y - 1, x), (y - 1, x + 1),
+        (y, x - 1), (y, x + 1),
+        (y + 1, x - 1), (y + 1, x), (y + 1, x + 1)]
   in
     neighbours |>
     List.filter (\(py, px) -> isAlive grid py px) |>
     List.foldl (\_ acc -> acc + 1) 0
 
-isAlive : Array Bool -> Int -> Int -> Bool
-isAlive grid posY posX =
-  MaybeBool.toBool (get grid posY posX)
+isAlive : Grid -> Int -> Int -> Bool
+isAlive grid y x =
+  MaybeBool.toBool (get grid y x)
 
-coordsToIndex : Int -> Int -> Int
-coordsToIndex posY posX = posY * grid_width + posX
+coordsToIndex : Grid -> Int -> Int -> Int
+coordsToIndex grid y x = y * grid.width + x

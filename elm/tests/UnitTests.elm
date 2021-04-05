@@ -1,7 +1,7 @@
 module UnitTests exposing (..)
 
 import Main exposing (..)
-import Grid
+import Grid exposing (Grid)
 
 import Expect exposing (Expectation)
 import Fuzz exposing (Fuzzer, int, list, string)
@@ -59,13 +59,13 @@ suite =
       ]
     ]
 
-populateGrid : List (Int, Int) -> Array Bool
+populateGrid : List (Int, Int) -> Grid
 populateGrid coords =
   let
     emptyGrid = Array.initialize (grid_width * grid_height) (always False)
   in
-    List.foldl markCellAlive emptyGrid coords
+    List.foldl markCellAlive (Grid.create grid_height grid_width) coords
 
-markCellAlive : (Int, Int) -> Array Bool -> Array Bool
+markCellAlive : (Int, Int) -> Grid -> Grid
 markCellAlive (posY, posX) grid =
-  Array.set (coordsToIndex posY posX) True grid
+  Grid.set grid posY posX True

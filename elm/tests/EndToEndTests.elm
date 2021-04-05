@@ -24,21 +24,21 @@ suite =
     , test "empty grid stays empty" <|
       \_ ->
         let
-          oneTickCells = (update Tick initialSetup).cells
+          oneTickCells = (update Tick initialSetup).grid.cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
     , test "lone cell dies off" <|
       \_ ->
         let
           loneCell = initialSetup |> update (ToggleCell 3 3)
-          oneTickCells = (update Tick loneCell).cells
+          oneTickCells = (update Tick loneCell).grid.cells
         in
           aliveCellsEquals [] oneTickCells |> Expect.true "Contains zero alive cells"
     , test "block remains still" <|
       \_ ->
         let
           block = initialSetup |> update (ToggleCell 3 3) |> update (ToggleCell 3 4) |> update (ToggleCell 4 3) |> update (ToggleCell 4 4)
-          oneTickCells = (update Tick block).cells
+          oneTickCells = (update Tick block).grid.cells
         in
           aliveCellsEquals [(3, 3), (3, 4), (4, 3), (4, 4)] oneTickCells |> Expect.true "Contains a block"
     ]

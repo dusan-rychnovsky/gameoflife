@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Grid
+import Grid exposing (Grid)
 import Browser
 import Html exposing (Html, button, div, input, text, label)
 import Html.Attributes exposing (..)
@@ -24,12 +24,12 @@ grid_height = 10
 type alias Model = 
   {  running : Bool
   ,  numSteps : String
-  ,  cells : Array Bool
+  ,  grid : Grid
   }
 
 init : Model
 init =
-  { running = False, numSteps = "", cells = Grid.create }
+  { running = False, numSteps = "", grid = Grid.create grid_height grid_width }
 
 -- UPDATE
 
@@ -42,8 +42,8 @@ type Msg
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    ToggleCell posY posX ->
-      { model | cells = Grid.flip model.cells posY posX }
+    ToggleCell y x ->
+      { model | grid = Grid.flip model.grid y x }
     
     SetNumSteps str ->
       { model | numSteps = str }
@@ -52,7 +52,7 @@ update msg model =
       { model | running = True }
 
     Tick ->
-      { model | cells = Grid.tick model.cells }
+      { model | grid = Grid.tick model.grid }
 
 -- VIEW
 
@@ -89,7 +89,7 @@ viewGridCell model posY posX =
       , style "border" "1px black solid"
       , style "background-color" "gray"
       , style "width" "50px"
-      , style "height" "50px" ] [ text (Debug.toString (Grid.get model.cells posY posX)) ]
+      , style "height" "50px" ] [ text (Debug.toString (Grid.get model.grid posY posX)) ]
 
 -- UTIL
 
