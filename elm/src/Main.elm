@@ -90,11 +90,3 @@ viewGridCell model posY posX =
       , style "background-color" "gray"
       , style "width" "50px"
       , style "height" "50px" ] [ text (Debug.toString (Grid.get model.grid posY posX)) ]
-
--- UTIL
-
-coordsToIndex : Int -> Int -> Int
-coordsToIndex posY posX = posY * grid_width + posX
-
-indexToCoords : Int -> (Int, Int)
-indexToCoords idx = (idx // grid_width, modBy grid_width idx)

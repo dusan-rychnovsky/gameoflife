@@ -1,4 +1,4 @@
-module Grid exposing (Grid, create, get, set, flip, flipAll, tick, isAlive, staysAlive, numOfAliveNeighbours, aliveNeighbours, toString)
+module Grid exposing (..)
 
 import MaybeBool
 import ListExt
