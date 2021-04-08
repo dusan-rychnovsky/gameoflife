@@ -21,8 +21,16 @@ emptyGrid = Grid.create 5 5
 suite : Test
 suite =
   describe "game of life"
-    [ test "initial setup respects num steps" <|
-    \_ -> initialSetup.numSteps |> Expect.equal "1"
-    , test "initial setup respects running" <|
-      \_ -> initialSetup.running |> Expect.equal True
+    [ describe "initial setup"
+      [ test "respects num steps" <|
+        \_ -> initialSetup.numSteps |> Expect.equal "1"
+      , test "respects running" <|
+        \_ -> initialSetup.running |> Expect.equal True
+      ]
+    , describe "tick"
+      [ skip <| test "gets applied when running" <|
+        \_ -> Expect.equal True False
+      , skip <| test "gets ignored when not running" <|
+        \_ -> Expect.equal True False
+      ]
     ]
