@@ -17,7 +17,8 @@ suite =
     -- O X X X
     -- O O X O
     -- X O O O
-    grid = Grid.flipAll (Grid.create 4 4) [(0, 0), (0, 3), (1, 1), (1, 2), (1, 3), (2, 2), (3, 0)]
+    emptyGrid = Grid.create 4 4
+    grid = Grid.flipAll emptyGrid [(0, 0), (0, 3), (1, 1), (1, 2), (1, 3), (2, 2), (3, 0)]
   in
     describe "Grid"
       [ describe "get"
@@ -91,6 +92,28 @@ suite =
           \_ -> (Grid.isAlive (populateGrid [(3, 3)]) 3 3) |> Expect.equal True
         , test "dead cell" <|
           \_ -> (Grid.isAlive (populateGrid [(4, 4)]) 3 3) |> Expect.equal False
+        ]
+      , describe "tick"
+        [ test "empty grid stays empty" <|
+          \_ ->
+            let
+              oneTickGrid = Grid.tick emptyGrid
+            in
+              Grid.equals emptyGrid oneTickGrid |> Expect.true "Contains zero alive cells"
+        , test "lone cell dies off" <|
+          \_ ->
+            let
+              loneCellGrid = Grid.set emptyGrid 3 3 True
+              oneTickGrid = Grid.tick loneCellGrid
+            in
+              Grid.equals emptyGrid oneTickGrid |> Expect.true "Contains zero alive cells"
+        , test "block remains still" <|
+          \_ ->
+            let
+              blockGrid = Grid.flipAll emptyGrid [(1, 1), (1, 2), (2, 1), (2, 2)]
+              oneTickGrid = Grid.tick blockGrid
+            in
+              Grid.equals blockGrid oneTickGrid |> Expect.true "Contains a block"
         ]
       ]
 

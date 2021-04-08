@@ -86,3 +86,9 @@ alivePositions : Grid -> List (Int, Int)
 alivePositions grid =
     positions grid |>
       List.filter (\(y, x) -> isAlive grid y x)
+
+equals : Grid -> Grid -> Bool
+equals first second =
+  (first.width == second.width) &&
+  (first.height == second.height) &&
+  ((List.sort (alivePositions first)) == (List.sort(alivePositions second)))
