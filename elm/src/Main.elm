@@ -76,18 +76,18 @@ viewMenu model =
   
 viewGrid : Model -> Html Msg
 viewGrid model =
-  div [ style "float" "left", style "border" "2px black solid", style "width" "520px"] (List.map (viewGridRow model) (List.range 0 (grid_height - 1)))
+  div [ style "float" "left", style "border" "2px black solid", style "width" "520px"] (List.map (viewGridRow model) (List.range 0 (model.grid.height - 1)))
 
 viewGridRow : Model -> Int -> Html Msg
-viewGridRow model posY =
-  div [] (List.map (viewGridCell model posY) (List.range 0 (grid_width - 1)))
+viewGridRow model y =
+  div [] (List.map (viewGridCell model y) (List.range 0 (model.grid.width - 1)))
 
 viewGridCell : Model -> Int -> Int -> Html Msg
-viewGridCell model posY posX =
-  div [ onClick (ToggleCell posY posX)
+viewGridCell model y x =
+  div [ onClick (ToggleCell y x)
       , style "float" "left"
       , style "border" "1px black solid"
-      , style "background-color" (backgroundColor model posY posX)
+      , style "background-color" (backgroundColor model y x)
       , style "width" "50px"
       , style "height" "50px" ] []
 
