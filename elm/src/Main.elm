@@ -37,6 +37,7 @@ type Msg
   = ToggleCell Int Int
   | SetNumSteps String
   | Run
+  | Stop
   | Tick
 
 update : Msg -> Model -> Model
@@ -51,8 +52,17 @@ update msg model =
     Run ->
       { model | running = True }
 
+    Stop ->
+      { model | running = False }
+
     Tick ->
-      { model | grid = Grid.tick model.grid }
+      case model.running of
+        True -> { model | numSteps = dec model.numSteps}
+        False -> model
+
+dec : String -> String
+dec value =
+  String.fromInt((Maybe.withDefault 0 (String.toInt value)) - 1)
 
 -- VIEW
 
