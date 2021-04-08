@@ -29,10 +29,20 @@ suite =
       ]
     , describe "tick"
       [ test "gets ignored when not running - num steps remains untouched" <|
-        \_ -> (initialSetup |> update Stop |> update Tick).numSteps |> Expect.equal "1"
+        \_ -> (loneCell |> update Stop |> update Tick).numSteps |> Expect.equal "1"
+      , test "gets ignored when not running - running stays False" <|
+        \_ -> (loneCell |> update Stop |> update Tick).running |> Expect.equal False
+      , test "gets ignored when not running - grid remains untouched" <|
+        \_ -> Grid.equals loneCell.grid (loneCell |> update Stop |> update Tick).grid |> Expect.equal True
       , test "gets applied when running - num steps gets decreased" <|
-        \_ -> (initialSetup |> update Tick).numSteps |> Expect.equal "0"
-      , test "gets applied when running - stops when num steps is 0" <|
+        \_ -> (loneCell |> update Tick).numSteps |> Expect.equal "0"
+      , test "gets applied when running - running stays True" <|
+        \_ -> (loneCell |> update Tick).running |> Expect.equal True
+      , test "gets applied when running - grid gets updated" <|
+        \_ -> Grid.equals initialSetup.grid (loneCell |> update Tick).grid |> Expect.equal True
+      , test "stops when finished - num steps remains 0" <|
+        \_ -> (initialSetup |> update Tick |> update Tick).numSteps |> Expect.equal "0"
+      , test "stops when finished - running gets set to False" <|
         \_ -> (initialSetup |> update Tick |> update Tick).running |> Expect.equal False
       ]
     ]

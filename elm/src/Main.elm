@@ -62,7 +62,7 @@ update msg model =
         case model.running of
           True ->
             if stepsNo > 0 then
-              { model | numSteps = String.fromInt (stepsNo - 1)}
+              { model | grid = Grid.tick model.grid, numSteps = String.fromInt (stepsNo - 1)}
             else
               { model | running = False}
           False -> model
