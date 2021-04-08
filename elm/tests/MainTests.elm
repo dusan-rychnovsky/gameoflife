@@ -27,6 +27,10 @@ suite =
       , test "respects running" <|
         \_ -> initialSetup.running |> Expect.equal True
       ]
+    , describe "set num steps"
+      [ test "rejects negative values" <|
+        \_ -> (update (SetNumSteps "-1") initialSetup).numSteps |> Expect.equal "0"
+      ]
     , describe "tick"
       [ test "gets ignored when not running - num steps remains untouched" <|
         \_ -> (loneCell |> update Stop |> update Tick).numSteps |> Expect.equal "1"

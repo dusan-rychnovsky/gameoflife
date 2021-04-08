@@ -47,7 +47,13 @@ update msg model =
       { model | grid = Grid.flip model.grid y x }
     
     SetNumSteps str ->
-      { model | numSteps = str }
+      let
+        stepsNo = toInt str
+      in
+        if stepsNo >= 0 then
+          { model | numSteps = String.fromInt stepsNo }
+        else
+          { model | numSteps = "0" }
 
     Run ->
       { model | running = True }
