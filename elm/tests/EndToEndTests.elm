@@ -44,13 +44,6 @@ suite =
           aliveCellsEquals [(3, 3), (3, 4), (4, 3), (4, 4)] oneTickCells |> Expect.true "Contains a block"
     ]
 
-maybeBoolToString : Maybe Bool -> String
-maybeBoolToString maybe =
-  case maybe of
-    Just True -> "T"
-    Just False -> "F"
-    Nothing -> "X"
-
 aliveCellsEquals : List (Int, Int) -> Grid -> Bool
 aliveCellsEquals coords grid =
   areEqual coords (Grid.alivePositions grid)
