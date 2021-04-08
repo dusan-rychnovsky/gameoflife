@@ -57,7 +57,7 @@ staysAlive grid y x =
 
 numOfAliveNeighbours : Grid -> Int -> Int -> Int
 numOfAliveNeighbours grid y x =
-    List.foldl (\_ acc -> acc + 1) 0 (aliveNeighbours grid y x)
+    List.length (aliveNeighbours grid y x)
 
 aliveNeighbours : Grid -> Int -> Int -> List (Int, Int)
 aliveNeighbours grid y x =
