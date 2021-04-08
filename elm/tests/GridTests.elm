@@ -34,6 +34,18 @@ suite =
         , test "returns Nothing when cell is out of board (to the bottom)" <|
           \_ -> Expect.equal Nothing (Grid.get grid grid.height 2)
         ]
+      , describe "set"
+        [ test "can set the cell value to True" <|
+          \_ -> Expect.equal (Just True) (Grid.get (Grid.set grid 0 1 True) 0 1)
+        ,  test "can set the cell value to False" <|
+          \_ -> Expect.equal (Just False) (Grid.get (Grid.set grid 0 0 False) 0 0)
+        ]
+      , describe "flip"
+        [ test "sets the cell value to True when it is False" <|
+          \_ -> Expect.equal (Just True) (Grid.get (Grid.flip grid 0 1) 0 1)
+        , test "sets the cell value to False when it is True" <|
+          \_ -> Expect.equal (Just False) (Grid.get (Grid.flip grid 0 0) 0 0)
+        ]
       , describe "staysAlive"
         [ test "a live cell with zero live neighbours dies" <|
           \_ -> Expect.equal False (Grid.staysAlive grid 3 0)
