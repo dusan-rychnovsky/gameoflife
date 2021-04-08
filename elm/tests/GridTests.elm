@@ -13,6 +13,10 @@ import List exposing (foldl)
 suite : Test
 suite =
   let
+    -- X O O X
+    -- O X X X
+    -- O O X O
+    -- X O O O
     grid = Grid.flipAll (Grid.create 4 4) [(0, 0), (0, 3), (1, 1), (1, 2), (1, 3), (2, 2), (3, 0)]
   in
     describe "Grid"
