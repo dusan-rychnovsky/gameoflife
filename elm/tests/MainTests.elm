@@ -13,10 +13,10 @@ import Array exposing (Array, get)
 import List exposing (filter, range, map)
 
 initialSetup : Model
-initialSetup = init |> update (SetNumSteps "1" ) |> update Run
+initialSetup = Tuple.first (init ()) |> updateBasic (SetNumSteps "1") |> updateBasic Run
 
 loneCell : Model
-loneCell = initialSetup |> update (ToggleCell 2 2)
+loneCell = initialSetup |> updateBasic (ToggleCell 2 2)
 
 suite : Test
 suite =
@@ -29,24 +29,24 @@ suite =
       ]
     , describe "set num steps"
       [ test "rejects negative values" <|
-        \_ -> (update (SetNumSteps "-1") initialSetup).numSteps |> Expect.equal "0"
+        \_ -> (updateBasic (SetNumSteps "-1") initialSetup).numSteps |> Expect.equal "0"
       ]
     , describe "tick"
       [ test "gets ignored when not running - num steps remains untouched" <|
-        \_ -> (loneCell |> update Stop |> update Tick).numSteps |> Expect.equal "1"
+        \_ -> (loneCell |> updateBasic Stop |> updateBasic Tick).numSteps |> Expect.equal "1"
       , test "gets ignored when not running - running stays False" <|
-        \_ -> (loneCell |> update Stop |> update Tick).running |> Expect.equal False
+        \_ -> (loneCell |> updateBasic Stop |> updateBasic Tick).running |> Expect.equal False
       , test "gets ignored when not running - grid remains untouched" <|
-        \_ -> Grid.equals loneCell.grid (loneCell |> update Stop |> update Tick).grid |> Expect.equal True
+        \_ -> Grid.equals loneCell.grid (loneCell |> updateBasic Stop |> updateBasic Tick).grid |> Expect.equal True
       , test "gets applied when running - num steps gets decreased" <|
-        \_ -> (loneCell |> update Tick).numSteps |> Expect.equal "0"
+        \_ -> (loneCell |> updateBasic Tick).numSteps |> Expect.equal "0"
       , test "gets applied when running - running stays True" <|
-        \_ -> (loneCell |> update Tick).running |> Expect.equal True
-      , test "gets applied when running - grid gets updated" <|
-        \_ -> Grid.equals initialSetup.grid (loneCell |> update Tick).grid |> Expect.equal True
+        \_ -> (loneCell |> updateBasic Tick).running |> Expect.equal True
+      , test "gets applied when running - grid gets updateBasicd" <|
+        \_ -> Grid.equals initialSetup.grid (loneCell |> updateBasic Tick).grid |> Expect.equal True
       , test "stops when finished - num steps remains 0" <|
-        \_ -> (initialSetup |> update Tick |> update Tick).numSteps |> Expect.equal "0"
+        \_ -> (initialSetup |> updateBasic Tick |> updateBasic Tick).numSteps |> Expect.equal "0"
       , test "stops when finished - running gets set to False" <|
-        \_ -> (initialSetup |> update Tick |> update Tick).running |> Expect.equal False
+        \_ -> (initialSetup |> updateBasic Tick |> updateBasic Tick).running |> Expect.equal False
       ]
     ]

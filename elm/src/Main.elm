@@ -5,6 +5,7 @@ import Browser
 import Html exposing (Html, button, div, input, text, label)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
+import Time
 import String exposing (toInt, fromInt)
 import Array exposing (Array, set, get)
 import List exposing (filter, foldl)
@@ -12,7 +13,7 @@ import List exposing (filter, foldl)
 -- MAIN
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+  Browser.element { init = init, view = view, update = update, subscriptions = subscriptions }
 
 -- CONST
 
@@ -27,9 +28,11 @@ type alias Model =
   ,  grid : Grid
   }
 
-init : Model
-init =
-  { running = False, numSteps = "", grid = Grid.create grid_height grid_width }
+init : () -> (Model, Cmd Msg)
+init _ =
+  ({ running = False, numSteps = "10", grid = Grid.create grid_height grid_width }
+  , Cmd.none
+  )
 
 -- UPDATE
 
@@ -40,8 +43,12 @@ type Msg
   | Stop
   | Tick
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+  (updateBasic msg model, Cmd.none)
+
+updateBasic : Msg -> Model -> Model
+updateBasic msg model =
   case msg of
     ToggleCell y x ->
       { model | grid = Grid.flip model.grid y x }
@@ -77,6 +84,10 @@ toInt : String -> Int
 toInt value =
   Maybe.withDefault 0 (String.toInt value)
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Time.every 1000 (\_ -> Tick)
+
 -- VIEW
 
 view : Model -> Html Msg
@@ -94,7 +105,10 @@ viewMenu model =
       , style "font-weight" "bold" ]
     [ label [] [ text "Steps: " ]
     , input [ type_ "number", value model.numSteps, onInput SetNumSteps, style "margin-bottom" "10px" ] [ ]
-    , button [ onClick Run, style "font-weight" "600" ] [ text "Run" ]
+    , if model.running then
+        button [ onClick Stop, style "font-weight" "600" ] [ text "Stop" ]
+      else
+        button [ onClick Run, style "font-weight" "600" ] [ text "Run" ]
     ]
   
 viewGrid : Model -> Html Msg
