@@ -87,6 +87,12 @@ viewGridCell model posY posX =
   div [ onClick (ToggleCell posY posX)
       , style "float" "left"
       , style "border" "1px black solid"
-      , style "background-color" "gray"
+      , style "background-color" (backgroundColor model posY posX)
       , style "width" "50px"
-      , style "height" "50px" ] [ text (Debug.toString (Grid.get model.grid posY posX)) ]
+      , style "height" "50px" ] []
+
+backgroundColor : Model -> Int -> Int -> String
+backgroundColor model y x =
+  case (Grid.get model.grid y x) of
+    Just True -> "green"
+    _ -> "gray"
