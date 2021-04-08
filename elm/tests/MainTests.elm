@@ -1,4 +1,4 @@
-module EndToEndTests exposing (..)
+module MainTests exposing (..)
 
 import Main exposing (..)
 import Grid exposing (Grid)
