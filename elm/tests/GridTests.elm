@@ -15,8 +15,22 @@ suite =
   let
     grid = Grid.flipAll (Grid.create 4 4) [(0, 0), (0, 3), (1, 1), (1, 2), (1, 3), (2, 2), (3, 0)]
   in
-    describe "unit tests"
-      [ describe "staysAlive"
+    describe "Grid"
+      [ describe "get"
+        [ test "returns Just True when cell is live" <|
+          \_ -> Expect.equal (Just True) (Grid.get grid 1 2)
+        , test "returns Just False when cell is dead" <|
+          \_ -> Expect.equal (Just False) (Grid.get grid 2 1)
+        , test "returns Nothing when cell is out of board - to the left" <|
+          \_ -> Expect.equal Nothing (Grid.get grid 2 -1)
+        , test "returns Nothing when cell is out of board (to the right)" <|
+          \_ -> Expect.equal Nothing (Grid.get grid 2 grid.width)
+        , test "returns Nothing when cell is out of board (to the top)" <|
+          \_ -> Expect.equal Nothing (Grid.get grid -1 2)
+        , test "returns Nothing when cell is out of board (to the bottom)" <|
+          \_ -> Expect.equal Nothing (Grid.get grid grid.height 2)
+        ]
+      , describe "staysAlive"
         [ test "a live cell with zero live neighbours dies" <|
           \_ -> Expect.equal False (Grid.staysAlive grid 3 0)
         , test "a live cell with one live neighbours dies" <|
