@@ -13,7 +13,7 @@ import Array exposing (Array, get)
 import List exposing (filter, range, map)
 
 initialSetup : Model
-initialSetup = init |> update (SetNumSteps "2" ) |> update Run
+initialSetup = init |> update (SetNumSteps "1" ) |> update Run
 
 loneCell : Model
 loneCell = initialSetup |> update (ToggleCell 2 2)
@@ -23,14 +23,16 @@ suite =
   describe "game of life"
     [ describe "initial setup"
       [ test "respects num steps" <|
-        \_ -> initialSetup.numSteps |> Expect.equal "2"
+        \_ -> initialSetup.numSteps |> Expect.equal "1"
       , test "respects running" <|
         \_ -> initialSetup.running |> Expect.equal True
       ]
     , describe "tick"
       [ test "gets ignored when not running - num steps remains untouched" <|
-        \_ -> (initialSetup |> update Stop |> update Tick).numSteps |> Expect.equal "2"
+        \_ -> (initialSetup |> update Stop |> update Tick).numSteps |> Expect.equal "1"
       , test "gets applied when running - num steps gets decreased" <|
-        \_ -> (initialSetup |> update Tick).numSteps |> Expect.equal "1"
+        \_ -> (initialSetup |> update Tick).numSteps |> Expect.equal "0"
+      , test "gets applied when running - stops when num steps is 0" <|
+        \_ -> (initialSetup |> update Tick |> update Tick).running |> Expect.equal False
       ]
     ]

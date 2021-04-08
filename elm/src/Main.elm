@@ -56,13 +56,20 @@ update msg model =
       { model | running = False }
 
     Tick ->
-      case model.running of
-        True -> { model | numSteps = dec model.numSteps}
-        False -> model
+      let
+        stepsNo = toInt model.numSteps
+      in
+        case model.running of
+          True ->
+            if stepsNo > 0 then
+              { model | numSteps = String.fromInt (stepsNo - 1)}
+            else
+              { model | running = False}
+          False -> model
 
-dec : String -> String
-dec value =
-  String.fromInt((Maybe.withDefault 0 (String.toInt value)) - 1)
+toInt : String -> Int
+toInt value =
+  Maybe.withDefault 0 (String.toInt value)
 
 -- VIEW
 
